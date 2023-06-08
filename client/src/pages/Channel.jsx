@@ -20,6 +20,7 @@ const Channel = ({ }) => {
     const dispatch = useDispatch();
     const [isChoice, setIsChoice] = useState(1);
     const [open, setOpen] = useState(false);
+    const [canEdit, setCanEdit] = useState(false);
     // channel có channel_id=id
     const [channelNow, setChannelNow] = useState([]);
     const [videosBelongToChannel, setVideosBelongToChannel] = useState([]);
@@ -52,14 +53,19 @@ const Channel = ({ }) => {
                     } else {
                         dispatch(setUser(null));
                     }
+
                 });
             } catch (error) {
                 console.error(error);
             }
         };
         fetchData();
-    }, []);
-
+    }, [id]);
+    useEffect(() => {
+        if (user?.email === channelNow[0]?.email) {
+            setCanEdit(true)
+        }
+    }, [channelNow])
     function generateRandomChannelId() {
         const randomId = Math.floor(Math.random() * 10000000).toString().padStart(7, "0");
         return randomId;
@@ -97,12 +103,11 @@ const Channel = ({ }) => {
             console.error(error);
         }
     };
-
     console.log('channelNow', channelNow[0]);
 
     const subscriber = 1;
     console.log("videosBelongToChannel", videosBelongToChannel);
-
+    console.log(canEdit);
 
     return (
         <div className="pt-20 px-9 bg-yt-black min-h-screen h-[calc(100%-53px)] w-full text-yt-white">
@@ -126,13 +131,7 @@ const Channel = ({ }) => {
                             Subscribe
                         </button>
                         : (videoCount > 0
-                            ? <button
-                                className='rounded-l-full rounded-r-full bg-yt-light-2 px-3 py-2'
-                                onClick={() => setOpen(true)}
-                            >
-                                Upload video
-                            </button>
-                            : <div className='flex gap-4 items-center'>
+                            ? <div className='flex gap-4 items-center'>
                                 <button
                                     className='rounded-l-full rounded-r-full bg-yt-light-2 px-3 py-2'
                                     onClick={() => setOpen(true)}
@@ -141,10 +140,18 @@ const Channel = ({ }) => {
                                 </button>
                                 <button
                                     className='rounded-l-full rounded-r-full bg-yt-light-2 px-3 py-2'
+                                    onClick={() => setIsChoice(2)}
                                 >
                                     Manager video
                                 </button>
                             </div>
+                            : <button
+                                className='rounded-l-full rounded-r-full bg-yt-light-2 px-3 py-2'
+                                onClick={() => setOpen(true)}
+                            >
+                                Upload video
+                            </button>
+
                         )}
                 </div>
             </div>
@@ -165,14 +172,15 @@ const Channel = ({ }) => {
                 ? isChoice == 2
                     ? <div className="ml-32 mr-10 pt-2 px-5 grid grid-cols-ch gap-x-5 gap-y-8 mt-6">
                         {videosBelongToChannel?.map((video, i) => (
-                            <div className="flex max-w-[200px]">
+                            <div className="flex max-w-[200px] h-[200px]">
                                 <VideoComp
                                     video_id={video.video_id}
                                     {...video}
                                     key={video.video_id}
                                     allChannels={allChannels}
                                     h="120px"
-                                    max_w="200px"
+                                    w="200px"
+                                    canEdit={canEdit} 
                                 />
                             </div>
                         ))}
@@ -210,7 +218,7 @@ const Channel = ({ }) => {
                 : <span className='mx-32'>This channel has not uploaded any videos yet. </span>
             }
             <div className='absolute top-[50%] left-[50%]'>
-            {open && <UploadVideo setOpen={setOpen} user={user}/>}
+                {open && <UploadVideo setOpen={setOpen} user={user}/>}
             </div>
         </div>
 

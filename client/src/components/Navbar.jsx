@@ -65,7 +65,7 @@ const Navbar = ({ setShowMenu }) => {
 
   return (
     <>
-      <div className="bg-yt-black fixed w-full z-10 pb-4">
+      <div className="bg-yt-black fixed w-full z-10 pb-2">
         <div className="h-14 flex items-center pl-4 pr-5 justify-between ">
           <div className="flex justify-between items-center">
             <div

@@ -220,9 +220,9 @@ router.put("/:id", (req, res) => {
 
 router.delete("/:id", async (req, res) => {
   let { id } = req.params;
-  // Sd database lấy về toàn bộ tasks
+  // Sd database lấy về toàn bộ videos
   try {
-    let data = await database.execute(`DELETE FROM task_keeper.tbl_task WHERE Task_id = ${id}`);
+    let data = await database.execute(`DELETE FROM videos WHERE channel_id = ${id}`);
     res.json({
       status: "success",
       message: "Delete successfully",

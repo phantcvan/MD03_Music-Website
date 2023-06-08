@@ -108,6 +108,8 @@ const Search = ({ }) => {
                     {...video}
                     key={video.video_id}
                     allChannels={allChannels}
+                    h="202px"
+                    w="360px"
                   />
                 ))}
               </div>

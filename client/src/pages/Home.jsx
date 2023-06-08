@@ -56,7 +56,7 @@ const Home = ({ }) => {
   };
   useEffect(() => {
     fetchData();
-  }, [allVideos]);
+  }, []);
 
   function generateRandomChannelId() {
     const randomId = Math.floor(Math.random() * 10000000).toString().padStart(7, "0");
@@ -117,26 +117,26 @@ const Home = ({ }) => {
     }
   }, [isChoice, allVideos]);
 
-console.log("videosTag",videosTag);
+  console.log("videosTag", videosTag);
   return (
     <>
       <div className="w-full min-h-screen h-[calc(100%-53px)] pt-20 bg-yt-black pl-20 scrollbar-hide"  >
         <div className="flex flex-row px-3 overflow-x-scroll relative scrollbar-hide mb-3">
-              {tags?.map((item, i) => (
-                <h2
-                  className={`font-medium text-sm py-2 px-4 mr-3 cursor-pointer rounded-lg 
+          {tags?.map((item, i) => (
+            <span
+              className={`font-medium text-sm py-2 px-4 mr-3 cursor-pointer rounded-lg w-fit
             ${isChoice == item.tag ? "text-yt-black bg-yt-white" : "text-yt-white bg-yt-light hover:bg-yt-light-1 "}`}
-                  key={i}
-                  onClick={() => setIsChoice(item.tag)}
-                >
-                  {item.tag}
-                </h2>
-              ))}
+              key={i}
+              onClick={() => setIsChoice(item.tag)}
+            >
+              {item.tag}
+            </span>
+          ))}
         </div>
 
         <div className="pt-2 px-5 grid grid-cols-yt gap-x-5 gap-y-8 my-5 ">
           {videosTag?.map((video, i) => (
-            <div className="flex max-w-[350px]" key={i}>
+            <div className="" key={i}>
               <VideoComp
                 video_id={video.video_id}
                 channel_id={video.channel_id}
@@ -145,7 +145,8 @@ console.log("videosTag",videosTag);
                 title={video.title}
                 thumbnail={video.thumbnail}
                 allChannels={allChannels}
-                h="210px"
+                h="202px"
+                w="360px"
                 channelDisplay
               />
             </div>

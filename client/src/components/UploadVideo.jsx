@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { getVideos } from '../slices/videoSlice';
 import axios from 'axios';
 import { getAllChannels } from '../slices/channelSlice';
+import { useNavigate } from 'react-router-dom';
 
 
 const UploadVideo = ({ setOpen, user }) => {
@@ -20,7 +21,7 @@ const UploadVideo = ({ setOpen, user }) => {
   const [tag, setTag] = useState("");
   const [tags, setTags] = useState([]);
   const [forKid, setForKid] = useState(false);
-
+  const navigate = useNavigate()
   const [message, setMessage] = useState("");
   const [existVideo, setExistVideo] = useState(false);
   const videos = useSelector(getVideos)
@@ -115,7 +116,7 @@ const UploadVideo = ({ setOpen, user }) => {
     setForKid(false);
     if (tags.includes('kid')) setTags(tags.filter((tag) => tag !== 'kid'))
   }
-
+console.log("tags", tags);
   const handleUpdateDetail = async (e) => {
     e.preventDefault();
     if (!title || !description || !selectedImg || !tag) {
@@ -129,7 +130,7 @@ const UploadVideo = ({ setOpen, user }) => {
       try {
         const [updateResponse, PostTagResponse] = await Promise.all([
           axios.put(`http://localhost:8000/api/v1/videos/${videoId}`, formData),
-          axios.post(`http://localhost:8000/api/v1/tag`, {
+          axios.post(`http://localhost:8000/api/v1/tags`, {
             videoId: videoId,
             tags: tags
           })
@@ -139,7 +140,6 @@ const UploadVideo = ({ setOpen, user }) => {
         if (updateResponse.data.status === 200) {
           console.log('Update thông tin video thành công');
         }
-
         console.log(PostTagResponse.data);
         if (PostTagResponse.data.status === 200) {
           console.log('Thêm tag thành công');
@@ -147,6 +147,10 @@ const UploadVideo = ({ setOpen, user }) => {
           setSecondStep(true);
           setOpen(false);
         }
+        if (PostTagResponse.data.status ===400||updateResponse.data.status === 400){
+          setMessage("Error");
+        }
+        navigate('/')
 
       } catch (error) {
         console.log(error)

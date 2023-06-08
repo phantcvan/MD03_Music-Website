@@ -338,7 +338,7 @@ const Video = () => {
         </div>
       </div>
       {open
-        && <div className='w-[100%] h-[100%] absolute top-[-38rem] left-0 bg-overlay-40 flex items-center 
+        && <div className='w-[100%] h-[100%] absolute top-[-20rem] left-0 bg-overlay-40 flex items-center 
                 justify-center z-20'>
           <div
             className='w-fit h-[60px] bg-[#F1F1F1] text-yt-light-2 p-5 fixed rounded-md'
