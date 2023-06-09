@@ -18,6 +18,7 @@ import { setCurrentUser, getAllChannels, getCurrentUser } from '../slices/channe
 import VideoInfo from "../components/VideoInfo";
 
 
+
 const Video = () => {
   const { id } = useParams();
   const [data, setData] = useState(null);
@@ -42,7 +43,7 @@ const Video = () => {
   const fetchData = async () => {
     try {
       const [allTagsResponse, tagsResponse, videosResponse, channelsResponse, commentsResponse] = await Promise.all([
-        axios.get('http://localhost:8000/api/v1/videos/tags'),
+        axios.get('http://localhost:8000/api/v1/tags'),
         axios.get('http://localhost:8000/api/v1/videos/list_tags'),
         axios.get('http://localhost:8000/api/v1/videos'),
         axios.get('http://localhost:8000/api/v1/channels'),
@@ -60,7 +61,7 @@ const Video = () => {
       console.error(error);
     }
   };
-  
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -70,7 +71,7 @@ const Video = () => {
     const timeout = setTimeout(() => {
       setOpen(false);
     }, 1000);
-  
+
     return () => {
       clearTimeout(timeout);
     };
@@ -238,7 +239,7 @@ const Video = () => {
 
 
   return (
-    <div className="py-12 px-9 bg-yt-black flex flex-row min-h-screen h-[calc(100%-53px)] w-full mt-10 gap-8">
+    <div className="py-12 px-9 bg-yt-black relative flex flex-row min-h-screen h-[calc(100%-53px)] w-[100%] mt-10 gap-8">
       <div className="flex-1 w-[640px]"  >
         <div className="flex justify-center items-center flex-1">
           <ReactPlayer url={videoUrl} controls playing={true}
@@ -274,10 +275,6 @@ const Video = () => {
             <>
               <div className="flex items-center">
                 <h1>{comments.length} Comments</h1>
-                {/* <div className="flex items-center mx-10">
-                  <MdOutlineSort size={30} className="mx-3" />
-                  <h5>Sort by</h5>
-                </div> */}
               </div>
 
               {user && (
@@ -312,7 +309,7 @@ const Video = () => {
       </div>
       <div className="right basis-[40%] px-3 overflow-y-hidden">
         <div>
-          <div className="flex flex-row px-2 overflow-x-scroll relative scrollbar-hide">
+          <div className="flex flex-row px-2 overflow-x-scroll scrollbar-hide">
             {tags.map((item, i) => (
               <h2
                 className={`text-yt-white font-normal text-sm py-1 px-4 bg-yt-light mr-3 cursor-pointer rounded-lg 
@@ -338,10 +335,10 @@ const Video = () => {
         </div>
       </div>
       {open
-        && <div className='w-[100%] h-[100%] absolute top-[-20rem] left-0 bg-overlay-40 flex items-center 
-                justify-center z-20'>
+        && <div className='w-[100%] h-[100%] bg-overlay-40 flex items-center 
+                justify-center z-30 absolute top-0 bottom-0 left-0 right-0' >
           <div
-            className='w-fit h-[60px] bg-[#F1F1F1] text-yt-light-2 p-5 fixed rounded-md'
+            className='w-fit h-[60px] bg-[#F1F1F1] text-yt-light-2 p-5 fixed bottom-3 rounded-md'
           >
             <span>Link copied to clipboard</span>
           </div>

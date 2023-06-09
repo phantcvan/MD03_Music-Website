@@ -12,6 +12,7 @@ import ReactPlayer from 'react-player';
 import { handleNumber } from "../static/fn";
 import axios from 'axios';
 import UploadVideo from '../components/UploadVideo';
+import { getNewVideo } from '../slices/videoSlice';
 
 
 
@@ -21,6 +22,7 @@ const Channel = ({ }) => {
     const [isChoice, setIsChoice] = useState(1);
     const [open, setOpen] = useState(false);
     const [canEdit, setCanEdit] = useState(false);
+    const newVideo = useSelector(getNewVideo);
     // channel có channel_id=id
     const [channelNow, setChannelNow] = useState([]);
     const [videosBelongToChannel, setVideosBelongToChannel] = useState([]);
@@ -31,6 +33,7 @@ const Channel = ({ }) => {
     const [videoCount, setVideoCount] = useState(0);
     const [videoHome, setVideoHome] = useState(null);
     const [uploadTime, setUploadTime] = useState(null);
+    const [edited, setEdited] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -60,7 +63,8 @@ const Channel = ({ }) => {
             }
         };
         fetchData();
-    }, [id]);
+    }, [id, edited, newVideo]);
+
     useEffect(() => {
         if (user?.email === channelNow[0]?.email) {
             setCanEdit(true)
@@ -146,7 +150,7 @@ const Channel = ({ }) => {
                                 </button>
                             </div>
                             : <button
-                                className='rounded-l-full rounded-r-full bg-yt-light-2 px-3 py-2'
+                                className='rounded-l-full rounded-r-full bg-yt-light-2 px-3 py-2 relative'
                                 onClick={() => setOpen(true)}
                             >
                                 Upload video
@@ -180,7 +184,10 @@ const Channel = ({ }) => {
                                     allChannels={allChannels}
                                     h="120px"
                                     w="200px"
-                                    canEdit={canEdit} 
+                                    canEdit={canEdit}
+                                    setEdited={setEdited}
+                                    setOpen={setOpen}
+                                    user={user}
                                 />
                             </div>
                         ))}
@@ -218,7 +225,7 @@ const Channel = ({ }) => {
                 : <span className='mx-32'>This channel has not uploaded any videos yet. </span>
             }
             <div className='absolute top-[50%] left-[50%]'>
-                {open && <UploadVideo setOpen={setOpen} user={user}/>}
+                {open && <UploadVideo setOpen={setOpen} user={user} />}
             </div>
         </div>
 

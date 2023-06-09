@@ -28,7 +28,7 @@ const VideoInfo = ({ id, channel_id, channelLogo, channelName, setOpen }) => {
         <div className='flex w-full'>
             <div className="flex items-center justify-between w-[100%]">
                 <div className="px-3 flex gap-3 justify-between items-center">
-                    <div>
+                    <div className='h-9 w-9'>
                         <Link to={`/channel/${channel_id}`}>
                             <img src={channelLogo} alt="" className="h-9 w-9 rounded-full" />
                         </Link>
@@ -39,15 +39,15 @@ const VideoInfo = ({ id, channel_id, channelLogo, channelName, setOpen }) => {
                             : `${channelName && channelName.substr(0, 20)}...`}
                     </h3>
                     {isSubscribe
-                        ? <button className="bg-yt-light-2 text-yt-white flex px-3 py-2 rounded-lg text-sm font-medium ml-3">
+                        ? <button className="bg-yt-light-2 text-yt-white flex px-3 py-2 rounded-lg text-sm font-medium">
                             <span className='flex items-center gap-2'><FaRegBell size={18} /> Subscribed</span>
                         </button>
-                        : <button className="bg-yt-white px-3 py-2 rounded-lg text-sm font-medium ml-3">
+                        : <button className="bg-yt-white px-3 py-2 rounded-lg text-sm font-medium">
                             Subscribe
                         </button>}
 
                 </div>
-                <div className="flex pl-28">
+                <div className="flex pl-16">
                     <div className="flex bg-yt-light-black items-center rounded-2xl h-10 ">
                         <div className="rounded-l-2xl h-10 flex px-3 items-center border-r-2 border-r-yt-light-1 cursor-pointer hover:bg-yt-light-1">
                             <AiFillLike className="text-yt-white text-2xl" />

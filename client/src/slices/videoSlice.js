@@ -4,6 +4,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   videos: [],
+  newVideo: "", //video_id
   tags: [],
   searchQuery: '',
   searchMessage: '',
@@ -15,6 +16,9 @@ const videoSlice = createSlice({
   reducers: {
     setVideos: (state, action) => {
       state.videos = action.payload;
+    },
+    setNewVideo: (state, action) => {
+      state.newVideo = action.payload;
     },
     setAllTags: (state, action) => {
       state.tags = action.payload;
@@ -40,8 +44,9 @@ const videoSlice = createSlice({
   },
 });
 
-export const { setVideos, incrementView, setSearchQuery, setSearchMessage,setAllTags } = videoSlice.actions;
+export const { setVideos, setNewVideo, incrementView, setSearchQuery, setSearchMessage,setAllTags } = videoSlice.actions;
 export const getVideos = (state) => state.video.videos;
+export const getNewVideo = (state) => state.video.newVideo;
 export const getAllTags = (state) => state.video.tags;
 export const getSearchQuery = (state) => state.video.searchQuery;
 export const getSearchMessage = (state) => state.video.searchMessage;

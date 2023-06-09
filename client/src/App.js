@@ -6,6 +6,7 @@ import Channel from "./pages/Channel";
 import Public from "./pages/Public";
 import History from "./pages/History";
 import Search from "./pages/Search";
+import UploadVideo from "./components/UploadVideo";
 
 function App() {
   return (

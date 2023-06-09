@@ -9,7 +9,7 @@ import VideoComp from "../components/VideoComp";
 import { onAuthStateChanged } from "firebase/auth";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { setVideos, getVideos, setAllTags, getAllTags } from '../slices/videoSlice';
+import { setVideos, getVideos, setAllTags, getAllTags,getNewVideo } from '../slices/videoSlice';
 import { setAllChannels, getAllChannels, setCurrentUser, getCurrentUser } from '../slices/channelSlice';
 
 
@@ -21,6 +21,7 @@ const Home = ({ }) => {
   const dispatch = useDispatch();
   const user = useSelector(getUser);
   const allVideos = useSelector(getVideos);
+  const newVideo = useSelector(getNewVideo);
   const allTags = useSelector(getAllTags);
   const allChannels = useSelector(getAllChannels);
   const currentUser = useSelector(getCurrentUser);
@@ -28,7 +29,7 @@ const Home = ({ }) => {
   const fetchData = async () => {
     try {
       const [allTagsResponse, tagsResponse, videosResponse, channelsResponse] = await Promise.all([
-        axios.get('http://localhost:8000/api/v1/videos/tags'),
+        axios.get('http://localhost:8000/api/v1/tags'),
         axios.get('http://localhost:8000/api/v1/videos/list_tags'),
         axios.get('http://localhost:8000/api/v1/videos'),
         axios.get('http://localhost:8000/api/v1/channels'),
@@ -57,6 +58,10 @@ const Home = ({ }) => {
   useEffect(() => {
     fetchData();
   }, []);
+  useEffect(() => {
+    fetchData();
+  }, [newVideo]);
+
 
   function generateRandomChannelId() {
     const randomId = Math.floor(Math.random() * 10000000).toString().padStart(7, "0");
@@ -136,7 +141,7 @@ const Home = ({ }) => {
 
         <div className="pt-2 px-5 grid grid-cols-yt gap-x-5 gap-y-8 my-5 ">
           {videosTag?.map((video, i) => (
-            <div className="" key={i}>
+            <div className="w-[360px]" key={i}>
               <VideoComp
                 video_id={video.video_id}
                 channel_id={video.channel_id}

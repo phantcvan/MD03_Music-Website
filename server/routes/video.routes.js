@@ -6,7 +6,6 @@ const validateData = require("../middleware/validateData");
 const multer = require("multer");
 
 
-
 router.get("/", async (req, res) => {
   console.log(req);
   const searchQuery = req.query.search;
@@ -30,18 +29,18 @@ router.get("/", async (req, res) => {
 });
 
 // Read all of tag
-router.get("/tags", async (req, res) => {
-  try {
-    let data = await database.execute("SELECT * FROM `clone-yt`.tags");
-    let [tags] = data;
-    res.json({
-      status: "success",
-      tags,
-    });
-  } catch (error) {
-    res.json({ error });
-  }
-});
+// router.get("/tags", async (req, res) => {
+//   try {
+//     let data = await database.execute("SELECT * FROM `clone-yt`.tags");
+//     let [tags] = data;
+//     res.json({
+//       status: "success",
+//       tags,
+//     });
+//   } catch (error) {
+//     res.json({ error });
+//   }
+// });
 
 
 router.get("/list_tags", async (req, res) => {
@@ -49,7 +48,8 @@ router.get("/list_tags", async (req, res) => {
     let data = await database.execute(`SELECT tag FROM tags AS t 
     JOIN videos AS v ON t.video_id = v.video_id 
     GROUP BY tag 
-    ORDER BY MAX(v.views) DESC`);
+    ORDER BY MAX(v.views) DESC
+    LIMIT 15`);
     let [tags] = data;
     res.json({
       status: "success",
@@ -182,6 +182,7 @@ router.put("/views/:id", async (req, res) => {
 // Update thông tin video
 router.put("/:id", (req, res) => {
   const { id } = req.params;
+  console.log(req.file);
   upload.array("thumbnail", 1)(req, res, async function (err) {
     if (err instanceof multer.MulterError) {
       console.log(err);
@@ -190,10 +191,10 @@ router.put("/:id", (req, res) => {
       console.log(err);
       res.status(500).json({ message: "Lỗi khi tải lên ảnh" });
     } else {
-      console.log("FILENAME",req.files[0].filename);
+      // console.log("FILENAME",req.files[0].filename);
+      const title=req.body.title;
+      const description=req.body.description;
       if (req.files) {
-        const title=req.body.title;
-        const description=req.body.description;
         const thumbnail=`http://localhost:8000/assets/${req.files[0].filename}`
         try {
           const query = `UPDATE videos SET title = ?, description = ?, thumbnail = ? WHERE video_id = ?`;
@@ -201,6 +202,23 @@ router.put("/:id", (req, res) => {
             title,
             description,
             thumbnail,
+            id,
+          ];
+          await database.execute(query, params);
+          return res.status(200).json({ 
+            status: 200,
+            success: true, 
+            message: "Update successfully"});
+        } catch (error) {
+          console.log(error);
+          return res.status(500).json({ success: false, message: "Update failed.", error });
+        }
+      } else {
+        try {
+          const query = `UPDATE videos SET title = ?, description = ? WHERE video_id = ?`;
+          const params = [
+            title,
+            description,
             id,
           ];
           await database.execute(query, params);
@@ -220,9 +238,8 @@ router.put("/:id", (req, res) => {
 
 router.delete("/:id", async (req, res) => {
   let { id } = req.params;
-  // Sd database lấy về toàn bộ videos
   try {
-    let data = await database.execute(`DELETE FROM videos WHERE channel_id = ${id}`);
+    await database.execute(`DELETE FROM videos WHERE video_id = ${id}`);
     res.json({
       status: "success",
       message: "Delete successfully",

@@ -1,30 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import { AiOutlineClose } from "react-icons/ai";
 import { RiUploadCloud2Line } from "react-icons/ri";
-import { useSelector } from 'react-redux';
-import { getVideos } from '../slices/videoSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { getVideos, getNewVideo, setNewVideo } from '../slices/videoSlice';
 import axios from 'axios';
 import { getAllChannels } from '../slices/channelSlice';
 import { useNavigate } from 'react-router-dom';
 
 
 const UploadVideo = ({ setOpen, user }) => {
-  const [showUpload, setShowUpload] = useState(false);
-  const [secondStep, setSecondStep] = useState(false);
+  const dispatch = useDispatch();
   const [selectInput, setSelectInput] = useState(0);
-  const [countText, setCountText] = useState(0);
+  const [secondStep, setSecondStep] = useState(false);
   const [videoId, setVideoId] = useState(0);
   const [selectedVideo, setSelectedVideo] = useState(null);
-  const [selectedImg, setSelectedImg] = useState(null);
   const [title, setTitle] = useState("");
+  const [selectedImg, setSelectedImg] = useState(null);
   const [description, setDescription] = useState("");
   const [tag, setTag] = useState("");
   const [tags, setTags] = useState([]);
   const [forKid, setForKid] = useState(false);
+  const [countText, setCountText] = useState(0);
   const navigate = useNavigate()
   const [message, setMessage] = useState("");
-  const [existVideo, setExistVideo] = useState(false);
-  const videos = useSelector(getVideos)
+  const videos = useSelector(getVideos);
+  const newVideo = useSelector(getNewVideo);
   const allChannels = useSelector(getAllChannels);
   // tạo videoId ngẫu nhiên
   const generateRandomId = () => {
@@ -77,6 +77,7 @@ const UploadVideo = ({ setOpen, user }) => {
             console.log('Thêm video thành công');
             setMessage("");
             setSecondStep(true);
+
           }
         })
         .catch(error => console.log(error))
@@ -116,7 +117,7 @@ const UploadVideo = ({ setOpen, user }) => {
     setForKid(false);
     if (tags.includes('kid')) setTags(tags.filter((tag) => tag !== 'kid'))
   }
-console.log("tags", tags);
+  console.log("tags", tags);
   const handleUpdateDetail = async (e) => {
     e.preventDefault();
     if (!title || !description || !selectedImg || !tag) {
@@ -147,10 +148,11 @@ console.log("tags", tags);
           setSecondStep(true);
           setOpen(false);
         }
-        if (PostTagResponse.data.status ===400||updateResponse.data.status === 400){
+        if (PostTagResponse.data.status === 400 || updateResponse.data.status === 400) {
           setMessage("Error");
         }
-        navigate('/')
+        dispatch(setNewVideo(videoId))
+        // navigate('/')
 
       } catch (error) {
         console.log(error)
@@ -222,6 +224,7 @@ console.log("tags", tags);
           </>
           // bước 2
           : <div className='w-full'>
+            {/* <VideoDetail setOpen={setOpen} videoId={videoId} setMessage={setMessage} /> */}
             <div className='absolute top-5 right-5 cursor-pointer'
               onClick={() => setOpen(false)}>
               <AiOutlineClose />
@@ -254,14 +257,21 @@ console.log("tags", tags);
                 <div className={`bg-yt-light-2 flex flex-col text-yt-gray border rounded-sm py-1 px-2 w-full
                  ${selectInput === 3 ? 'border-[#3EA6FF]' : 'border-yt-gray'}
                 `}>
-                  <label className={`${selectInput === 3 && 'text-[#3EA6FF]'} text-lg font-medium`}>
-                    Thumbnail</label>
-                  <span className='my-1'>Select or upload a picture that shows what's in your video.
-                    A good thumbnail stands out and draws viewers' attention.</span>
-                  <input type="file" name="thumbnail" required
-                    className='bg-yt-light-2 text-yt-white outline-none w-full'
-                    onChange={handleImgChange} />
-                </div>
+                            <label className={`${selectInput === 3 && 'text-[#3EA6FF]'} text-lg font-medium`}>
+                                Thumbnail</label>
+                            <div className='flex justify-start gap-3'>
+                                <div className='flex flex-col'>
+                                    <span className='my-1'>Select or upload a picture that shows what's in your video.
+                                        A good thumbnail stands out and draws viewers' attention.</span>
+                                    <input type="file" name="thumbnail" required
+                                        // value={selectedImg}
+                                        className='bg-yt-light-2 text-yt-white outline-none w-full'
+                                        onChange={handleImgChange} />
+                                </div>
+                                {selectedImg && <img src={selectedImg} alt="Selected Thumbnail"
+                                    className='w-32' />}
+                            </div>
+                        </div>
                 <div className={`bg-yt-light-2 flex flex-col text-yt-gray border rounded-sm py-1 px-2 w-full
                  ${selectInput === 4 ? 'border-[#3EA6FF]' : 'border-yt-gray'}
                 `}>
@@ -285,9 +295,6 @@ console.log("tags", tags);
                 </div>
 
                 <div className='flex justify-end w-full gap-2'>
-                  {/* <button className='py-2 px-5 rounded-sm text-yt-light-2 font-medium my-3 bg-yt-gray'>
-                    BACK
-                  </button> */}
                   <button className='py-2 bg-[#3EA6FF] px-5 rounded-sm text-yt-black font-medium my-3'>
                     SAVE
                   </button>
@@ -301,8 +308,8 @@ console.log("tags", tags);
                   <p className='mt-10 bg-yt-gray w-fit m-auto p-2 rounded-sm'>{message}</p>
                 </div>}
             </div>
-
           </div>
+
         }
       </div>
     </div>
